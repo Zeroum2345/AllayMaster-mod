@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "allay-master",
+	"version": "${version}",
+	"name": "Allay Master",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/allay-master/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.lixumano.allaymaster.AllayMaster"
+		],
+		"client": [
+			"com.lixumano.allaymaster.AllayMasterClient"
+		],
+		"fabric-datagen": [
+			"com.lixumano.allaymaster.AllayMasterDataGenerator"
+		]
+	},
+	"mixins": [
+		"allay-master.mixins.json",
+		{
+			"config": "allay-master.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

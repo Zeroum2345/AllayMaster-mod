@@ -1,0 +1,10 @@
+/summon allaymaster:red_allay
+/give @a
+/give @a allaymaster:red_allay_spawn_egg
+/summon allaymaster:red_allay
+/kill @e[type=allaymaster:red_allay
+/kill @e[type=allaymaster:red_allay]
+/summon allaymaster:red_allay
+/give @a allaymaster:red_allay_spawn_egg
+/time set day
+/kill @e[type=allaymaster:red_allay]

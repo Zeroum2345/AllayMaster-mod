@@ -1,0 +1,16 @@
+{
+  "minecraft:recipes/decorations/crafting_table": {
+    "criteria": {
+      "unlock_right_away": "2024-08-06 12:45:59 -0300"
+    },
+    "done": true
+  },
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:badlands": "2024-08-06 12:46:00 -0300",
+      "minecraft:desert": "2024-08-06 12:46:09 -0300"
+    },
+    "done": false
+  },
+  "DataVersion": 3953
+}
