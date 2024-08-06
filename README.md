@@ -1,6 +1,6 @@
 # Allay Master Mod - Work in progress
 
-- [ ] Red Allay
+- [x] Red Allay
 - [ ] White Allay
 - [ ] Yellow Allay
 - [ ] Green Allay
