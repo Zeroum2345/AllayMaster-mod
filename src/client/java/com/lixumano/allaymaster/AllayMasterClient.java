@@ -7,5 +7,7 @@ public class AllayMasterClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(AllayMaster.RED_ALLAY, RedAllayRender::new);
+		EntityRendererRegistry.register(AllayMaster.WHITE_ALLAY, WhiteAllayRender::new);
+
 	}
 }

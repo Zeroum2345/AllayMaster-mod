@@ -1,0 +1,21 @@
+{
+  "minecraft:recipes/decorations/crafting_table": {
+    "criteria": {
+      "unlock_right_away": "2024-08-06 16:17:33 -0300"
+    },
+    "done": true
+  },
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:savanna": "2024-08-06 16:17:33 -0300"
+    },
+    "done": false
+  },
+  "minecraft:recipes/misc/beacon": {
+    "criteria": {
+      "has_nether_star": "2024-08-06 16:17:33 -0300"
+    },
+    "done": true
+  },
+  "DataVersion": 3953
+}
