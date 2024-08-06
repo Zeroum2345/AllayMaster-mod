@@ -1,2 +1,8 @@
-# AllayMaster-mod
-Repository for Minecraft mod Allay Master
+# Allay Master Mod - Work in progress
+
+[] Red Allay
+[] White Allay
+[] Yellow Allay
+[] Green Allay
+[] Gray Allay
+[] Purple Allay
