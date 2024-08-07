@@ -46,6 +46,11 @@ public class WhiteAllay extends TameableAllay{
         }
     }
 
+    @Override
+    public boolean canPickUpLoot() {
+        return false;
+    }
+
     private void useAbility(){
         ItemStack itemStack = this.getMainHandStack();
 
@@ -90,7 +95,7 @@ public class WhiteAllay extends TameableAllay{
         }
 
         if(this.getOwner() != null){
-            if(itemStack.isOf(Items.POTION) && this.getOwner().equals(player)){
+            if((itemStack.isOf(Items.POTION) || itemStack.isEmpty()) && this.getOwner().equals(player)){
                 return super.interactMob(player, hand);
             }
         }

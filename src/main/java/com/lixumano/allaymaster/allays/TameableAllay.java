@@ -1,16 +1,21 @@
 package com.lixumano.allaymaster.allays;
 
 import com.lixumano.allaymaster.FollowPlayerGoal;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,6 +27,7 @@ import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -45,8 +51,12 @@ public class TameableAllay extends AllayEntity {
 
     @Override
     public void tick() {
-        if(this.getOwner() == null){
+        if(this.getOwnerUuid() != null && this.getOwner() == null){
             this.setSitting(true);
+        }
+
+        if(this.isSitting()){
+            this.navigation.stop();
         }
 
         super.tick();
@@ -56,6 +66,21 @@ public class TameableAllay extends AllayEntity {
         super.initDataTracker(builder);
         builder.add(TAMEABLE_FLAGS, (byte)0);
         builder.add(OWNER_UUID, Optional.empty());
+    }
+
+    @Override
+    protected ActionResult interactMob(PlayerEntity player, Hand hand) {
+        if(player.getStackInHand(hand).isEmpty() && !player.isInSneakingPose()){
+            if (this.isOwner(player)) {
+                this.setSitting(!this.isSitting());
+                this.jumping = false;
+                this.navigation.stop();
+                this.setTarget((LivingEntity)null);
+                return ActionResult.SUCCESS_NO_ITEM_USED;
+            }
+        }
+
+        return super.interactMob(player, hand);
     }
 
     protected ActionResult tryTame(PlayerEntity player, Hand hand, Item item){
@@ -198,7 +223,7 @@ public class TameableAllay extends AllayEntity {
     }
 
     public boolean canAttackWithOwner(LivingEntity target, LivingEntity owner) {
-        return true;
+        return false;
     }
 
     public Team getScoreboardTeam() {
@@ -241,6 +266,66 @@ public class TameableAllay extends AllayEntity {
 
     public void setSitting(boolean sitting) {
         this.sitting = sitting;
+    }
+
+    public void tryTeleportToOwner() {
+        LivingEntity livingEntity = this.getOwner();
+        if (livingEntity != null) {
+            this.tryTeleportNear(livingEntity.getBlockPos());
+        }
+
+    }
+
+    public boolean shouldTryTeleportToOwner() {
+        LivingEntity livingEntity = this.getOwner();
+        return livingEntity != null && this.squaredDistanceTo(this.getOwner()) >= 144.0;
+    }
+
+    private void tryTeleportNear(BlockPos pos) {
+        for(int i = 0; i < 10; ++i) {
+            int j = this.random.nextBetween(-3, 3);
+            int k = this.random.nextBetween(-3, 3);
+            if (Math.abs(j) >= 2 || Math.abs(k) >= 2) {
+                int l = this.random.nextBetween(-1, 1);
+                if (this.tryTeleportTo(pos.getX() + j, pos.getY() + l, pos.getZ() + k)) {
+                    return;
+                }
+            }
+        }
+
+    }
+
+    private boolean tryTeleportTo(int x, int y, int z) {
+        if (!this.canTeleportTo(new BlockPos(x, y, z))) {
+            return false;
+        } else {
+            this.refreshPositionAndAngles((double)x + 0.5, (double)y, (double)z + 0.5, this.getYaw(), this.getPitch());
+            this.navigation.stop();
+            return true;
+        }
+    }
+
+    private boolean canTeleportTo(BlockPos pos) {
+        PathNodeType pathNodeType = LandPathNodeMaker.getLandNodeType(this, pos);
+        if (pathNodeType != PathNodeType.WALKABLE) {
+            return false;
+        } else {
+            BlockState blockState = this.getWorld().getBlockState(pos.down());
+            if (!this.canTeleportOntoLeaves() && blockState.getBlock() instanceof LeavesBlock) {
+                return false;
+            } else {
+                BlockPos blockPos = pos.subtract(this.getBlockPos());
+                return this.getWorld().isSpaceEmpty(this, this.getBoundingBox().offset(blockPos));
+            }
+        }
+    }
+
+    public final boolean cannotFollowOwner() {
+        return this.isSitting() || this.hasVehicle() || this.mightBeLeashed() || this.getOwner() != null && this.getOwner().isSpectator();
+    }
+
+    protected boolean canTeleportOntoLeaves() {
+        return false;
     }
 
     static {

@@ -9,3 +9,5 @@
 /time set day
 /kill @e[type=allaymaster:red_allay]
 /kill @e[type=allaymaster:white_allay]
+/time set day
+/kill @e[type=allaymaster:white_allay]
