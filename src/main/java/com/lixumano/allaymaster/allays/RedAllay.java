@@ -25,6 +25,11 @@ public class RedAllay extends TameableAllay{
         this.useHability();
     }
 
+    @Override
+    public boolean canPickUpLoot() {
+        return false;
+    }
+
     private void useHability(){
         ItemStack itemStack = this.getMainHandStack();
 
@@ -50,7 +55,7 @@ public class RedAllay extends TameableAllay{
         }
 
         if(this.getOwner() != null){
-            if(itemStack.isOf(Items.POTION) && this.getOwner().equals(player)){
+            if((itemStack.isOf(Items.POTION) || itemStack.isEmpty()) && this.getOwner().equals(player)){
                 return super.interactMob(player, hand);
             }
         }
